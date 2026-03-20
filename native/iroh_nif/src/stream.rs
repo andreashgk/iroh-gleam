@@ -86,3 +86,23 @@ fn stream_read_exact(env: Env, sr: ResourceArc<RecvStreamResource>, len: usize) 
         Err(e) => (atoms::error(), e).encode(env),
     }
 }
+
+#[nif(schedule = "DirtyIo")]
+fn stream_read_to_end(env: Env, sr: ResourceArc<RecvStreamResource>, max_len: usize) -> Term {
+    let res = RUNTIME.block_on(async move {
+        let mut lock = sr.0.lock().await;
+        match lock.read_to_end(max_len).await {
+            Ok(buf) => Ok(buf),
+            Err(e) => Err(e.to_string()),
+        }
+    });
+
+    match res {
+        Ok(buf) => {
+            let mut binary = NewBinary::new(env, buf.len());
+            binary.copy_from_slice(&buf);
+            (atoms::ok(), Binary::from(binary)).encode(env)
+        }
+        Err(e) => (atoms::error(), e).encode(env),
+    }
+}

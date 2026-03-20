@@ -16,3 +16,12 @@ pub fn read(stream: RecvStream, len: Int) -> Result(BitArray, String)
 /// being able to read this amount of bytes.
 @external(erlang, "iroh_nif", "stream_read_exact")
 pub fn read_exact(stream: RecvStream, len: Int) -> Result(BitArray, String)
+
+/// Convenience method to read all remaining data into a BitArray.
+///
+/// Fails if more than `size_limit` bytes are read.
+@external(erlang, "iroh_nif", "stream_read_to_end")
+pub fn read_to_end(
+  stream: RecvStream,
+  size_limit: Int,
+) -> Result(BitArray, String)
