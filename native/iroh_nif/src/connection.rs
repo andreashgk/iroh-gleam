@@ -1,6 +1,6 @@
-use iroh::endpoint::{Connection, Incoming, RecvStream, SendStream};
+use iroh::endpoint::{Connection, Incoming, RecvStream, SendStream, VarInt};
 use rustler::{
-    nif, resource_impl, Atom, Encoder, Env, LocalPid, OwnedEnv, Resource, ResourceArc, Term,
+    nif, resource_impl, Atom, Binary, Encoder, Env, LocalPid, OwnedEnv, Resource, ResourceArc, Term,
 };
 use tokio::select;
 use tokio_util::sync::CancellationToken;
@@ -93,6 +93,16 @@ fn connection_open_bi(env: Env, cr: ResourceArc<ConnectionResource>) -> Term {
         }
         Err(e) => (atoms::error(), e).encode(env),
     }
+}
+
+#[nif]
+fn connection_close(cr: ResourceArc<ConnectionResource>, error_code: u32, reason: Binary) {
+    cr.0.close(VarInt::from_u32(error_code), &reason);
+}
+
+#[nif]
+fn connection_is_closed(cr: ResourceArc<ConnectionResource>) -> bool {
+    cr.0.close_reason().is_some()
 }
 
 #[nif]

@@ -1,13 +1,13 @@
 -module(iroh_nif).
 
--export([canceltoken_cancel/1, connection_open_bi/1, connection_open_uni/1,
-         connection_subscribe/2, endpoint_addr/1, endpoint_bind/3, endpoint_close/1,
-         endpoint_connect/3, endpoint_id/1, endpoint_is_closed/1, endpoint_online/1,
-         endpoint_subscribe/2, incoming_accept/1, incoming_ignore/1, incoming_refuse/1,
-         public_key_from_string/1, public_key_to_addr/1, public_key_to_string/1,
-         secret_key_generate/0, secret_key_to_public/1, stream_finish/1, stream_read/2,
-         stream_read_exact/2, stream_read_to_end/2, stream_write/2, ticket_from_addr/1,
-         ticket_to_addr/1]).
+-export([canceltoken_cancel/1, connection_close/3, connection_is_closed/1,
+         connection_open_bi/1, connection_open_uni/1, connection_subscribe/2, endpoint_addr/1,
+         endpoint_bind/3, endpoint_close/1, endpoint_connect/3, endpoint_id/1,
+         endpoint_is_closed/1, endpoint_online/1, endpoint_subscribe/2, incoming_accept/1,
+         incoming_ignore/1, incoming_refuse/1, public_key_from_string/1, public_key_to_addr/1,
+         public_key_to_string/1, secret_key_generate/0, secret_key_to_public/1, stream_finish/1,
+         stream_read/2, stream_read_exact/2, stream_read_to_end/2, stream_write/2,
+         ticket_from_addr/1, ticket_to_addr/1]).
 
 -on_load init/0.
 
@@ -23,6 +23,12 @@ init() ->
     erlang:load_nif(SoName, 0).
 
 canceltoken_cancel(_) ->
+    exit(nif_library_not_loaded).
+
+connection_close(_, _, _) ->
+    exit(nif_library_not_loaded).
+
+connection_is_closed(_) ->
     exit(nif_library_not_loaded).
 
 connection_open_bi(_) ->

@@ -31,3 +31,10 @@ pub fn subscribe(
   conn: Connection,
   subject: process.Subject(Event),
 ) -> iroh.CancellationToken
+
+@external(erlang, "iroh_nif", "connection_close")
+pub fn close(conn: Connection, error_code: Int, reason: BitArray) -> Nil
+
+/// Returns whether the connection has closed for any reason.
+@external(erlang, "iroh_nif", "connection_is_closed")
+pub fn is_closed(conn: Connection) -> Bool

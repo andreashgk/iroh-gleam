@@ -227,3 +227,36 @@ pub fn ticket_test() {
   let assert Ok(_res) =
     endpoint |> endpoint.addr |> ticket.from_addr |> ticket.to_addr
 }
+
+pub fn connection_close_test() {
+  use <- with_timeout(5)
+
+  let e1 = endpoint()
+  let e2 = endpoint()
+
+  let subject = process.new_subject()
+  endpoint.subscribe(e1, subject)
+
+  process.spawn(fn() {
+    let assert Ok(con) = endpoint.connect(e2, endpoint.addr(e1), <<"test">>)
+      as "Failed to open connection"
+
+    let subject = process.new_subject()
+    connection.subscribe(con, subject)
+
+    let assert Ok(connection.Closed) = process.receive(subject, 5000)
+      as "Did not get connection closed message"
+
+    connection.is_closed(con) |> should.be_true
+  })
+
+  let assert Ok(endpoint.IncomingConnection(incoming)) =
+    process.receive(subject, 5000)
+    as "Did not receive connection"
+
+  let assert Ok(con) = incoming.accept(incoming)
+    as "Failed to accept connection"
+
+  connection.close(con, 0, <<>>)
+  connection.is_closed(con) |> should.be_true
+}
