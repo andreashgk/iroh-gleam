@@ -1,6 +1,7 @@
 pub mod connection;
 pub mod endpoint;
 pub mod stream;
+pub mod ticket;
 
 use once_cell::sync::Lazy;
 use rustler::{nif, resource_impl, Resource, ResourceArc};

@@ -8,6 +8,7 @@ import iroh/endpoint
 import iroh/endpoint/relay_mode
 import iroh/incoming
 import iroh/stream
+import iroh/ticket
 
 pub fn main() {
   gleeunit.main()
@@ -217,4 +218,12 @@ pub fn bi_stream_test() {
     as "Failed to read final message"
 
   should.equal(message, received_message)
+}
+
+pub fn ticket_test() {
+  use <- with_timeout(5)
+
+  let endpoint = endpoint()
+  let assert Ok(_res) =
+    endpoint |> endpoint.addr |> ticket.from_addr |> ticket.to_addr
 }
