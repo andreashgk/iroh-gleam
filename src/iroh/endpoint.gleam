@@ -5,8 +5,12 @@ import iroh/connection
 import iroh/endpoint/relay_mode
 import iroh/incoming
 
+/// An address to an iroh endpoint.
 pub type Address
 
+/// An iroh endpoint.
+///
+/// Needs to be closed manually on exit with `endpoint.close`.
 pub type Endpoint
 
 pub type SecretKey
