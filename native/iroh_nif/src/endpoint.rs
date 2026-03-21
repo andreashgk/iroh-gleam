@@ -34,11 +34,11 @@ pub struct EndpointResource {
 
 #[resource_impl]
 impl Resource for EndpointResource {
-    // fn destructor(self, _env: Env<'_>) {
-    //     RUNTIME.spawn(async move {
-    //         self.endpoint.close().await;
-    //     });
-    // }
+    fn destructor(self, _env: Env<'_>) {
+        RUNTIME.spawn(async move {
+            self.endpoint.close().await;
+        });
+    }
 }
 
 #[nif(schedule = "DirtyIo")]
