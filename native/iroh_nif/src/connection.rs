@@ -37,6 +37,7 @@ fn incoming_accept(env: Env, ir: ResourceArc<IncomingResource>) -> Term {
         let Some(incoming) = incoming else {
             panic!("trying to accept already handled incoming connection");
         };
+        incoming.remote_addr();
 
         match incoming.accept() {
             Ok(conn) => match conn.await {
