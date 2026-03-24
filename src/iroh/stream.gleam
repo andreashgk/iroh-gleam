@@ -8,6 +8,13 @@ pub fn write(stream: SendStream, data: BitArray) -> Result(Nil, String)
 @external(erlang, "iroh_nif", "stream_finish")
 pub fn finish(stream: SendStream) -> Result(Nil, String)
 
+/// Stop accepting data on this stream.
+///
+/// Discards unread data and notifies the peer to stop transmitting. Calling this function when the
+/// stream is already closed will return an error.
+@external(erlang, "iroh_nif", "stream_stop")
+pub fn stop(stream: RecvStream, error_code: Int) -> Result(Nil, Nil)
+
 /// Reads up to `len` bytes from the stream.
 @external(erlang, "iroh_nif", "stream_read")
 pub fn read(stream: RecvStream, len: Int) -> Result(BitArray, String)

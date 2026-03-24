@@ -44,6 +44,19 @@ fn stream_finish(env: Env, sr: ResourceArc<SendStreamResource>) -> Term {
 }
 
 #[nif(schedule = "DirtyIo")]
+fn stream_stop(env: Env, sr: ResourceArc<RecvStreamResource>, error_code: u32) -> Term {
+    let res = RUNTIME.block_on(async {
+        let mut lock = sr.0.lock().await;
+        lock.stop(error_code.into())
+    });
+
+    match res {
+        Ok(_) => (atoms::ok(), atoms::nil()).encode(env),
+        Err(_) => (atoms::error(), atoms::nil()).encode(env),
+    }
+}
+
+#[nif(schedule = "DirtyIo")]
 fn stream_read(env: Env, sr: ResourceArc<RecvStreamResource>, len: usize) -> Term {
     let res = RUNTIME.block_on(async {
         let mut binary = NewBinary::new(env, len);
