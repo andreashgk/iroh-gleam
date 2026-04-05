@@ -5,8 +5,9 @@
          endpoint_bind/3, endpoint_close/1, endpoint_connect/3, endpoint_id/1,
          endpoint_is_closed/1, endpoint_online/1, endpoint_subscribe/2, incoming_accept/1,
          incoming_ignore/1, incoming_refuse/1, public_key_from_string/1, public_key_to_addr/1,
-         public_key_to_string/1, secret_key_generate/0, secret_key_to_public/1, stream_finish/1,
-         stream_read/2, stream_read_exact/2, stream_read_to_end/2, stream_stop/2, stream_write/2,
+         public_key_to_string/1, secret_key_generate/0, secret_key_from_bit_array/1,
+         secret_key_to_bit_array/1, secret_key_to_public/1, stream_finish/1, stream_read/2,
+         stream_read_exact/2, stream_read_to_end/2, stream_stop/2, stream_write/2,
          ticket_from_addr/1, ticket_to_addr/1]).
 
 -on_load init/0.
@@ -83,6 +84,12 @@ public_key_to_string(_) ->
     exit(nif_library_not_loaded).
 
 secret_key_generate() ->
+    exit(nif_library_not_loaded).
+
+secret_key_from_bit_array(_) ->
+    exit(nif_library_not_loaded).
+
+secret_key_to_bit_array(_) ->
     exit(nif_library_not_loaded).
 
 secret_key_to_public(_) ->

@@ -110,6 +110,18 @@ pub fn connect(
 @external(erlang, "iroh_nif", "secret_key_generate")
 pub fn secret_key_generate() -> SecretKey
 
+/// Turn raw bytes back into a secret key.
+///
+/// To create a new secret key, look at `secret_key_generate()`.
+/// Returns an error if the provided BitArray is of the wrong length. Secret keys have a length of
+/// 32 bytes.
+@external(erlang, "iroh_nif", "secret_key_from_bit_array")
+pub fn secret_key_from_bit_array(sk: BitArray) -> Result(SecretKey, Nil)
+
+/// Returns the raw bytes of a secret key.
+@external(erlang, "iroh_nif", "secret_key_to_bit_array")
+pub fn secret_key_to_bit_array(sk: SecretKey) -> BitArray
+
 @external(erlang, "iroh_nif", "secret_key_to_public")
 pub fn secret_key_to_public(sk: SecretKey) -> PublicKey
 

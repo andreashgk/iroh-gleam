@@ -1,8 +1,9 @@
-use std::str::FromStr;
+use std::{io::Cursor, str::FromStr};
 
 use iroh::{Endpoint, EndpointAddr, PublicKey, RelayMode, SecretKey};
 use rustler::{
-    nif, resource_impl, Atom, Binary, Encoder, Env, LocalPid, OwnedEnv, Resource, ResourceArc, Term,
+    nif, resource_impl, Atom, Binary, Encoder, Env, LocalPid, NewBinary, OwnedEnv, Resource,
+    ResourceArc, Term,
 };
 use tokio::select;
 use tokio_util::sync::CancellationToken;
@@ -167,6 +168,25 @@ fn endpoint_connect<'a>(
 #[nif]
 fn secret_key_generate() -> ResourceArc<SecretKeyResource> {
     ResourceArc::new(SecretKeyResource(SecretKey::generate(&mut rand::rng())))
+}
+
+#[nif]
+fn secret_key_to_bit_array(env: Env, sk: ResourceArc<SecretKeyResource>) -> Binary {
+    let key = sk.0.to_bytes();
+    let mut buf = NewBinary::new(env, key.len());
+    std::io::copy(&mut Cursor::new(key), &mut Cursor::new(buf.as_mut_slice()))
+        .expect("len(key) == len(buf)");
+
+    Binary::from(buf)
+}
+
+#[nif]
+fn secret_key_from_bit_array<'a>(env: Env<'a>, bytes: Binary<'a>) -> Term<'a> {
+    let Some(bytes) = bytes.as_array() else {
+        return (atoms::error(), atoms::nil()).encode(env);
+    };
+    let sk = SecretKey::from_bytes(bytes);
+    (atoms::ok(), ResourceArc::new(SecretKeyResource(sk))).encode(env)
 }
 
 #[nif]
