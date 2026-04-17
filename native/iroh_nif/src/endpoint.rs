@@ -167,7 +167,7 @@ fn endpoint_connect<'a>(
 
 #[nif]
 fn secret_key_generate() -> ResourceArc<SecretKeyResource> {
-    ResourceArc::new(SecretKeyResource(SecretKey::generate(&mut rand::rng())))
+    ResourceArc::new(SecretKeyResource(SecretKey::generate()))
 }
 
 #[nif]
